@@ -1,4 +1,4 @@
-# Computer Vision Learning Guide (Beginner → Confident)
+# Computer Vision Learning Guide 
 
 > A hands-on, one-file guide to Computer Vision with **Python + OpenCV**, finishing with **CNNs, YOLO and Vision Transformers**.
 > Every topic follows the same rhythm: **Concept → Code → What happens → Try it yourself → Check yourself.**
