@@ -146,27 +146,32 @@ Noise creates thousands of tiny fake "edges". Blurring first keeps only the real
 
 ## 3. Setup
 
-### Step 1 – Python & virtual environment
+This guide uses **[uv](https://docs.astral.sh/uv/)** for Python and package management. It creates the virtual environment for you, so there is no manual activate step.
+
+### Step 1 – Create the project
 
 ```bash
-# Python 3.9+ recommended
-python -m venv cv-env
-
-# Windows
-cv-env\Scripts\activate
-# macOS / Linux
-source cv-env/bin/activate
+uv init computer-vision-learning
+cd computer-vision-learning
 ```
 
-> Using **uv**? `uv venv && uv pip install opencv-python numpy matplotlib` works the same way.
+This creates `pyproject.toml`, `.python-version` and a starter `main.py`. (Already inside an existing folder? Run `uv init` there instead.)
 
-### Step 2 – Install libraries
+### Step 2 – Add libraries
 
 ```bash
-pip install opencv-python numpy matplotlib
+uv add opencv-python numpy matplotlib
+
+# For notebooks (VS Code / Jupyter):
+uv add ipykernel
+
 # Needed later (Part C):
-pip install torch torchvision ultralytics
+uv add torch torchvision ultralytics transformers pillow
 ```
+
+`uv add` installs the package into the project's `.venv` and records it in `pyproject.toml` and `uv.lock`.
+
+> Use `opencv-python`, not `opencv-python-headless`. The headless build has no GUI support, so `cv2.imshow` will not work.
 
 ### Step 3 – Verify
 
@@ -177,6 +182,14 @@ import numpy as np
 print("OpenCV version:", cv2.__version__)
 print("NumPy version :", np.__version__)
 ```
+
+Run it with uv (no need to activate anything):
+
+```bash
+uv run python check.py
+```
+
+> **Notebooks in VS Code:** open the `.ipynb`, click *Select Kernel*, and choose the `.venv` inside your project folder.
 
 ### Step 4 – Get a test image
 
@@ -1210,7 +1223,7 @@ Detection:      "cat at [x1,y1,x2,y2] with 92% confidence" + "dog at [...]"
 ### Run YOLO in 5 lines
 
 ```bash
-pip install ultralytics
+uv add ultralytics
 ```
 
 ```python
@@ -1327,7 +1340,7 @@ Image → split into 16×16 patches → flatten each → add position info
 ### Quick ViT usage (Hugging Face)
 
 ```bash
-pip install transformers
+uv add transformers
 ```
 
 ```python
@@ -1549,7 +1562,9 @@ contours, _ = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 computer-vision-learning/
 │
 ├── README.md                     ← this guide
-├── requirements.txt
+├── pyproject.toml                ← dependencies (managed by uv)
+├── uv.lock                       ← exact locked versions
+├── .python-version
 ├── images/                       ← sample images (cat.jpg, people.jpg …)
 │
 ├── 01_basics/
@@ -1587,17 +1602,33 @@ computer-vision-learning/
     └── realtime_yolo/
 ```
 
-`requirements.txt`
+`pyproject.toml` (created by `uv init`, filled in by `uv add`)
 
+```toml
+[project]
+name = "computer-vision-learning"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "opencv-python",
+    "numpy",
+    "matplotlib",
+    "ipykernel",
+    "torch",
+    "torchvision",
+    "ultralytics",
+    "transformers",
+    "pillow",
+]
 ```
-opencv-python
-numpy
-matplotlib
-torch
-torchvision
-ultralytics
-transformers
-pillow
+
+**Everyday uv commands**
+
+```bash
+uv sync                          # recreate the exact environment on a new machine
+uv run python 01_basics/01_read_show_save.py   # run any script in the project env
+uv add <package>                 # add a dependency
+uv remove <package>              # remove a dependency
 ```
 
 ### Where to go next
